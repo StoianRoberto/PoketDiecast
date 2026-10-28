@@ -11,6 +11,8 @@ const clear = document.getElementById("clear_filters");
 const count = document.getElementById("result_count");
 const model = document.getElementById("model_dialog");
 const grid = document.getElementById("card_grid");
+const dropdowns = document.querySelectorAll(".dropdown");
+
 
 //  Event to close dialog clicking outside its scope
 model.addEventListener("click", (event) => { if (event.target === model) { model.close() } } );
@@ -119,5 +121,37 @@ function openCard(car) {
     model.showModal();
 };
 
+//  Populate each of the dropdown menus
+function populateDropdown(menu, list) {
+    const field = menu.dataset.field;
+    const container = menu.querySelector(".options");
+
+    const counts = {};
+    list.forEach(car => {counts[car[field]] = (counts[list[field]] || 0) + 1;});
+
+    container.replaceChildren();
+    Object.keys(counts).sort().forEach(value => {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = value;
+
+        //label.append(checkbox, ${value} (${counts[value]}));
+        label.append(checkbox, value, counts[value]);
+        container.append(label);
+    })
+}
+
 //  Generate the grid
 populateCardGrid(cars);
+
+dropdowns.forEach(dropdown => {
+    const button = dropdown.querySelector("button");
+    const menu = dropdown.querySelector(".dropdown_content");
+
+    populateDropdown(menu, cars);
+    button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute('aria-expanded', !expanded ? 'true' : 'false')
+    });
+});

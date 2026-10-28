@@ -28,7 +28,8 @@ export const cars = [
         year: 2021,
         series: "Japan Series",
         collection: "JDM",
-        model_number: "MJ-2002"
+        model_number: "MJ-2002",
+        img: ""
     },
     {
         id: 3,
@@ -39,7 +40,8 @@ export const cars = [
         year: 2020,
         series: "Moving Parts",
         collection: "JDM",
-        model_number: "MB-3003"
+        model_number: "MB-3003",
+        img: ""
     },
     {
         id: 4,
@@ -50,7 +52,8 @@ export const cars = [
         year: 2018,
         series: "Japan Historics",
         collection: "JDM",
-        model_number: "HW-1004"
+        model_number: "HW-1004",
+        img: ""
     },
     {
         id: 5,
@@ -61,7 +64,8 @@ export const cars = [
         year: 2017,
         series: "Japan Historics",
         collection: "JDM",
-        model_number: "HW-1005"
+        model_number: "HW-1005",
+        img: ""
     },
     {
         id: 6,
@@ -72,7 +76,8 @@ export const cars = [
         year: 2012,
         series: "Classic Collection",
         collection: "European Classics",
-        model_number: "MC-4006"
+        model_number: "MC-4006",
+        img: ""
     },
     {
         id: 7,
@@ -83,7 +88,8 @@ export const cars = [
         year: 2014,
         series: "Touring Cars",
         collection: "European Classics",
-        model_number: "MC-4007"
+        model_number: "MC-4007",
+        img: ""
     },
     {
         id: 8,
@@ -94,7 +100,8 @@ export const cars = [
         year: 2016,
         series: "Special Edition",
         collection: "Muscle",
-        model_number: "MS-5008"
+        model_number: "MS-5008",
+        img: ""
     },
     {
         id: 9,
@@ -105,7 +112,8 @@ export const cars = [
         year: 2015,
         series: "Gold Collection",
         collection: "Muscle",
-        model_number: "BB-6009"
+        model_number: "BB-6009",
+        img: ""
     },
     {
         id: 10,
@@ -116,7 +124,8 @@ export const cars = [
         year: 2019,
         series: "Race & Play",
         collection: "Supercars",
-        model_number: "BB-6010"
+        model_number: "BB-6010",
+        img: ""
     },
     {
         id: 11,
@@ -127,7 +136,8 @@ export const cars = [
         year: 2013,
         series: "Special Edition",
         collection: "Supercars",
-        model_number: "MS-5011"
+        model_number: "MS-5011",
+        img: ""
     },
     {
         id: 12,
@@ -138,7 +148,8 @@ export const cars = [
         year: 2022,
         series: "Vintage Cars",
         collection: "Daily Classics",
-        model_number: "MJ-2012"
+        model_number: "MJ-2012",
+        img: ""
     },
     {
         id: 13,
@@ -149,7 +160,8 @@ export const cars = [
         year: 2021,
         series: "MBX City",
         collection: "Daily Classics",
-        model_number: "MB-3013"
+        model_number: "MB-3013",
+        img: ""
     },
     {
         id: 14,
@@ -160,6 +172,7 @@ export const cars = [
         year: 2015,
         series: "Back to the Future",
         collection: "Movie Cars",
-        model_number: "HW-1014"
+        model_number: "HW-1014",
+        img: ""
     }
 ];

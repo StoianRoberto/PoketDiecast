@@ -21,39 +21,29 @@
                 <input type="search" name="search_bar" id="search_bar" placeholder="Search models" aria-label="Search models">
                 <div class="dropdown"> 
                     <button type="button" aria-expanded="false" aria-controls="scale_menu"> Scale </button>
-                    <div class="dropdown_content" id="scale_menu" role="group" aria-label="Scale">
-                        <input type="checkbox" name="scale_check" id="scale_64" value="1:64">
-                        <label for="scale_64"> 1:64 </label>
+                    <div class="dropdown_content" id="scale_menu" data-field="scale" role="group" aria-label="Scale">
+                        <div class="options"></div>
+                        <!-- <label for="scale_64"> 1:64 </label>
                         <input type="checkbox" name="scale_check" id="scale_43" value="1:43">
                         <label for="scale_43"> 1:43 </label>
                         <input type="checkbox" name="scale_check" id="scale_24" value="1:24">
                         <label for="scale_24"> 1:24 </label>
                         <input type="checkbox" name="scale_check" id="scale_18" value="1:18">
-                        <label for="scale_18"> 1:18 </label>
+                        <label for="scale_18"> 1:18 </label> -->
                     </div>
                 </div>
                 <div class="dropdown"> 
                     <button type="button" aria-expanded="false" aria-controls="brand_menu"> Brand </button>
-                    <div class="dropdown_content" id="brand_menu" role="group" aria-label="Brand">
+                    <div class="dropdown_content" id="brand_menu" data-field="brand" role="group" aria-label="Brand">
                         <input type="search" name="brand_search" id="brand_search" placeholder="Search brand" aria-label="Search brand">
-                        <input type="checkbox" name="brand_check" id="hotwheels" value="HotWheels">
-                        <label for="hotwheels"> HotWheels </label>
-                        <input type="checkbox" name="brand_check" id="majorette" value="Majorette">
-                        <label for="majorette"> Majorette </label>
-                        <input type="checkbox" name="brand_check" id="matchbox" value="Matchbox">
-                        <label for="matchbox"> Matchbox </label>
+                        <div class="options"></div>
                     </div>
                 </div>
                 <div class="dropdown"> 
                     <button type="button" aria-expanded="false" aria-controls="make_menu"> Car make </button>
-                    <div class="dropdown_content" id="make_menu" role="group" aria-label="Car make">
+                    <div class="dropdown_content" id="make_menu" data-field="make" role="group" aria-label="Car make">
                         <input type="search" name="make_search" id="make_search" placeholder="Search car make" aria-label="Search car make">
-                        <input type="checkbox" name="make_check" id="nissan" value="Nissan">
-                        <label for="nissan"> Nissan </label>
-                        <input type="checkbox" name="make_check" id="toyota" value="Toyota">
-                        <label for="toyota"> Toyota </label>
-                        <input type="checkbox" name="make_check" id="mazda" value="Mazda">
-                        <label for="mazda"> Mazda </label>
+                        <div class="options"></div>
                     </div>
                 </div>
                 <button type="button" id="clear_filters"> Clear filters </button>
@@ -61,22 +51,6 @@
             <p id="result_count" aria-live="polite"></p>
             <div class="card_grid" id="card_grid"></div>
             <dialog id="model_dialog" aria-labelledby="dialog_title">
-                <!-- <div class="dialog_header">
-                    <h2 id="dialog_title"> Car name </h2>
-                    <button type="button" class="export"> Export </button>
-                    <button type="button" class="modify"> Modify </button>
-                    <button type="button" class="delete"> Delete </button>
-                    <button type="button" class="close"> Close </button>
-                </div>
-                <img src="*/assets/Mazda-RX7.png" alt="Car">
-                <ul>
-                    <li> Brand name </li>
-                    <li> Scale </li>
-                    <li> Model Number </li>
-                    <li> Year </li>
-                    <li> Collection </li>
-                    <li> Series </li>
-                </ul> -->
             </dialog>
         <script type="module" src="../scripts/Catalog.js"></script>
         </main>
