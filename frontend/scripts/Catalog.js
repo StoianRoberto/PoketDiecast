@@ -11,8 +11,12 @@ const clear = document.getElementById("clear_filters");
 const count = document.getElementById("result_count");
 const model = document.getElementById("model_dialog");
 const grid = document.getElementById("card_grid");
-const dropdowns = document.querySelectorAll(".dropdown");
 
+/*
+=============================
+    GRID + DIALOG
+=============================
+*/
 
 //  Event to close dialog clicking outside its scope
 model.addEventListener("click", (event) => { if (event.target === model) { model.close() } } );
@@ -52,11 +56,11 @@ function createCard(car) {
     title.append(open_button);
 
     const info = document.createElement("ul");
-    const make = document.createElement("li");
-    make.textContent = car.make;
-    const brand = document.createElement("li");
-    brand.textContent = car.brand;
-    info.append(make, brand);
+    const car_make = document.createElement("li");
+    car_make.textContent = car.make;
+    const car_brand = document.createElement("li");
+    car_brand.textContent = car.brand;
+    info.append(car_make, car_brand);
 
     card.append(img, title, info);
     return card;
@@ -121,37 +125,79 @@ function openCard(car) {
     model.showModal();
 };
 
-//  Populate each of the dropdown menus
-function populateDropdown(menu, list) {
-    const field = menu.dataset.field;
-    const container = menu.querySelector(".options");
-
-    const counts = {};
-    list.forEach(car => {counts[car[field]] = (counts[list[field]] || 0) + 1;});
-
-    container.replaceChildren();
-    Object.keys(counts).sort().forEach(value => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = value;
-
-        //label.append(checkbox, ${value} (${counts[value]}));
-        label.append(checkbox, value, counts[value]);
-        container.append(label);
-    })
-}
-
 //  Generate the grid
 populateCardGrid(cars);
 
-dropdowns.forEach(dropdown => {
-    const button = dropdown.querySelector("button");
-    const menu = dropdown.querySelector(".dropdown_content");
 
-    populateDropdown(menu, cars);
-    button.addEventListener("click", () => {
-        const expanded = button.getAttribute("aria-expanded") === "true";
-        button.setAttribute('aria-expanded', !expanded ? 'true' : 'false')
-    });
-});
+/*
+=============================
+    DROPDOWNS
+=============================
+*/
+
+document.querySelectorAll("[data-field]").forEach(content => populateDropdown(content, cars));
+document.addEventListener('click', (event) => handle(event));
+//document.addEventListener('input', (event) => search(event));
+
+function closeAll() {
+    document.querySelectorAll('.dropdown > button').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+};
+
+function toggle(button){
+    const exp = button.getAttribute("aria-expanded") === "true";
+    closeAll();
+
+
+    button.setAttribute("aria-expanded", String(!exp));
+};
+
+function handle(event) {
+    const button = event.target.closest('.dropdown > button');
+    if(button) {
+        toggle(button);
+        return;
+    }
+
+    if(event.target.closest('.dropdown')) return;
+
+    closeAll();
+};
+
+function populateDropdown(content, cars) {
+    const field = content.dataset.field;
+    const options = content.querySelector(".options");
+    const count = {};
+    cars.forEach(car => {count[car[field]] = (count[car[field]] || 0) + 1;});
+
+    Object.keys(count)
+        .sort()
+        .forEach(value => {
+            const label = document.createElement("label");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = field;
+            checkbox.value = value;
+
+            const name = document.createElement("span");
+            name.classList.add("option_name");
+            name.textContent = value;
+            
+            const amount = document.createElement("span");
+            amount.classList.add("option_count");
+            amount.textContent = `(${count[value]})`;
+
+            label.append(checkbox, name, amount);
+            console.log(field, content, options);
+            options.append(label);
+    })
+};
+
+function search(event) {
+    if(event.target.closest('.dropdown_content input[type="search"]')) {
+        const query = event.target.value.toLowerCase().trim(); 
+        const menu = event.target.closest('.dropdown_content');
+
+        //menu.querySelectorAll('.checkbox value').forEach(label => )
+    }
+};
