@@ -167,18 +167,11 @@ main {
 }
 
 .options_count {
-    margin-left: auto;
+    display: inline-block;
 }
 
 .options label[hidden] {
-    margin-left: auto;
-}
-
-.options label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
+    display: none;
 }
 
 #clear_filters {

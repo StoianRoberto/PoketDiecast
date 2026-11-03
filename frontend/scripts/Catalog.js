@@ -135,18 +135,66 @@ populateCardGrid(cars);
 =============================
 */
 
+const selected = {};
+document.querySelectorAll("[data-field]").forEach(menu => {
+    selected[menu.dataset.field] = new Set();
+});
+let query = "";
+
 document.querySelectorAll("[data-field]").forEach(content => populateDropdown(content, cars));
 document.addEventListener('click', (event) => handle(event));
-//document.addEventListener('input', (event) => search(event));
+clear.addEventListener('click', (event) => {
+    Object.values(selected).forEach(set => set.clear());
+    query = "";
+    searchbar.value = "";
+    
+    searchbar.value = "";
+    document.querySelectorAll('.dropdown_content input[type="checkbox"]')
+        .forEach(checkbox => checkbox.checked = false);
+    document.querySelectorAll(".options label[hidden]")
+        .forEach(label => label.hidden = false);
+
+    update();
+});
+
+searchbar.addEventListener('input', (event) => {
+    query = event.target.value.toLowerCase().trim();
+    update();
+});
+
+document.addEventListener("change", (event) => {
+    if(!event.target.matches('.dropdown_content input[type="checkbox"]')) return;
+
+    const name = event.target.name;
+    const value = event.target.value;
+    const checked = event.target.checked;
+    if(checked) selected[name].add(value);
+    else selected[name].delete(value);
+    update();
+});
+
+document.addEventListener("input", (event) => {
+    //  Ignore every input that isn't a dropdown search box (main search bar, etc.)
+    if(!event.target.matches('.dropdown_content input[type="search"]')) return;
+
+    const text = event.target.value.toLowerCase().trim();
+    const menu = event.target.closest(".dropdown_content");
+
+    menu.querySelectorAll(".options label").forEach(label => {
+        const value = label.querySelector("input").value.toLowerCase();
+        label.hidden = !value.includes(text);
+    });
+});
 
 function closeAll() {
+    document.querySelectorAll('.dropdown_content input[type="search"]')
+        .forEach(box => box.value = "");
     document.querySelectorAll('.dropdown > button').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
 };
 
 function toggle(button){
     const exp = button.getAttribute("aria-expanded") === "true";
     closeAll();
-
 
     button.setAttribute("aria-expanded", String(!exp));
 };
@@ -188,16 +236,20 @@ function populateDropdown(content, cars) {
             amount.textContent = `(${count[value]})`;
 
             label.append(checkbox, name, amount);
-            console.log(field, content, options);
             options.append(label);
     })
 };
 
-function search(event) {
-    if(event.target.closest('.dropdown_content input[type="search"]')) {
-        const query = event.target.value.toLowerCase().trim(); 
-        const menu = event.target.closest('.dropdown_content');
+function applyFilters(cars, selected, query) {
+    return cars.filter(car => {
+        const matches_text = car.name.toLowerCase().includes(query);
+        const matches_fields = Object.keys(selected).every(field =>
+            selected[field].size === 0 || selected[field].has(String(car[field]))
+        );
+        return matches_text && matches_fields;
+    });
+};
 
-        //menu.querySelectorAll('.checkbox value').forEach(label => )
-    }
+function update() {
+    populateCardGrid(applyFilters(cars, selected, query));
 };
