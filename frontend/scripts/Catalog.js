@@ -151,9 +151,10 @@ clear.addEventListener('click', (event) => {
     searchbar.value = "";
     document.querySelectorAll('.dropdown_content input[type="checkbox"]')
         .forEach(checkbox => checkbox.checked = false);
-    document.querySelectorAll(".options label[hidden]")
+    /*document.querySelectorAll(".options label[hidden]")
         .forEach(label => label.hidden = false);
-
+    */
+    document.querySelectorAll(".dropdown_content").forEach(resetMenuSearch);
     update();
 });
 
@@ -186,10 +187,17 @@ document.addEventListener("input", (event) => {
     });
 });
 
+function resetMenuSearch(menu) {
+    const box = menu.querySelector('input[type="search"]');
+    if(box) box.value = "";
+    menu.querySelectorAll(".options label[hidden]").forEach(label => label.hidden = false);
+};
+
 function closeAll() {
     document.querySelectorAll('.dropdown_content input[type="search"]')
         .forEach(box => box.value = "");
     document.querySelectorAll('.dropdown > button').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    document.querySelectorAll(".dropdown_content").forEach(resetMenuSearch);
 };
 
 function toggle(button){
@@ -209,6 +217,27 @@ function handle(event) {
     if(event.target.closest('.dropdown')) return;
 
     closeAll();
+};
+
+function countBy(list, field) {
+    const counts = {};
+    list.forEach(car => { counts[car[field]] = (counts[car[field]] || 0) + 1; });
+    return counts;
+};
+
+function updateCounts() {
+    document.querySelectorAll("[data-field]").forEach(menu => {
+        const field = menu.dataset.field;
+        const others = applyFilters(cars, { ...selected, [field]: new Set() }, query);
+        const counts = countBy(others, field);
+
+        menu.querySelectorAll(".options label").forEach(label => {
+            const box = label.querySelector("input");
+            const amount = counts[box.value] || 0;
+            label.querySelector(".option_count").textContent = `(${amount})`;
+            label.classList.toggle("unavailable", amount === 0 && !box.checked);
+        });
+    });
 };
 
 function populateDropdown(content, cars) {
@@ -252,4 +281,5 @@ function applyFilters(cars, selected, query) {
 
 function update() {
     populateCardGrid(applyFilters(cars, selected, query));
+    updateCounts();
 };
