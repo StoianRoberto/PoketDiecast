@@ -1,0 +1,143 @@
+/*
+=============================
+    DESIGN TOKENS
+=============================
+*/
+
+:root {
+    /*  =====  COLOURS  =====  */
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --text: #1d2330;
+    --text-muted: #5c6577;
+    --border: #d5d9e0;
+    --accent: #1f5fd1;
+    --accent-soft: #e6eefc;
+    --danger: #c0392b;
+
+    /*  =====  SHAPE + SPACING  =====  */
+    --radius: 8px;
+    --radius-lg: 12px;
+    --gap: 1rem;
+    --page-max: 1200px;       /* max width of the page content */
+    --page-padding: 1.5rem;   /* side space between the content and the screen edge */
+
+    /*  =====  SHADOWS  =====  */
+    --shadow-md: 0 6px 18px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.3);
+
+    /*  =====  TYPOGRAPHY  =====  */
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    /* Colours every checkbox, radio and range with the accent */
+    accent-color: var(--accent);
+}
+
+/*
+=============================
+    BASE
+=============================
+*/
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+}
+
+h1, h2 {
+    margin: 0;
+    line-height: 1.25;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* Keeps the "hidden" attribute working even when a class sets "display" */
+[hidden] {
+    display: none !important;
+}
+
+/* Visible keyboard focus everywhere (only shown for keyboard use) */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/*
+=============================
+    FORM CONTROLS
+=============================
+*/
+
+/*  =====  BUTTONS  =====  */
+
+button {
+    font: inherit;
+    color: inherit;
+    padding: 0.4rem 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--accent-soft);
+}
+
+/*  =====  TEXT INPUTS  =====  */
+
+input[type="search"] {
+    font: inherit;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+/*
+=============================
+    PAGE LAYOUT
+=============================
+*/
+
+main {
+    width: min(100% - 2 * var(--page-padding), var(--page-max));
+    margin-inline: auto;
+    padding-block: 1.5rem;
+}
+
+footer {
+    padding: 1.5rem var(--page-padding);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/*
+=============================
+    RESPONSIVE + ACCESSIBILITY
+=============================
+*/
+
+@media (max-width: 600px) {
+    :root {
+        --page-padding: 1rem;
+    }
+}
+
+/* Turns off animations and transitions for people who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

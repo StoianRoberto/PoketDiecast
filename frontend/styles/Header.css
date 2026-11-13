@@ -1,0 +1,53 @@
+/*
+=============================
+    HEADER
+=============================
+*/
+
+body > header {
+    position: sticky;     /* stays visible while scrolling */
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap);
+    /* Side padding lines the header content up with the centred <main> on wide screens */
+    padding: 0.75rem max(var(--page-padding), (100% - var(--page-max)) / 2);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+#title {
+    font-size: 1.4rem;
+}
+
+/*
+=============================
+    NAVIGATION
+=============================
+*/
+
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.navbar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+}
+
+.navbar a:hover {
+    color: var(--text);
+}
+
+/* The current page (set with aria-current="page" in the HTML) */
+.navbar a[aria-current="page"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}

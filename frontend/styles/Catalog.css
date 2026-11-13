@@ -1,109 +1,10 @@
-:root {
-    --bg: #f6f7f9;
-    --surface: #ffffff;
-    --text: #1d2330;
-    --text-muted: #5c6577;
-    --border: #d5d9e0;
-    --accent: #1f5fd1;
-    --accent-soft: #e6eefc;
-    --danger: #c0392b;
-    --radius: 8px;
-    --gap: 1rem;
-}
+/*
+=============================
+    SEARCH + FILTERS
+=============================
+*/
 
-/* ---------- Base ---------- */
-
-*, *::before, *::after {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
-    color: var(--text);
-    background: var(--bg);
-}
-
-/* Visible keyboard focus everywhere (only shown for keyboard use) */
-:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
-/* Shared button look; specific buttons override below */
-button {
-    font: inherit;
-    color: inherit;
-    padding: 0.4rem 0.8rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-}
-
-button:hover {
-    background: var(--accent-soft);
-}
-
-input[type="search"] {
-    font: inherit;
-    padding: 0.4rem 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-}
-
-/* ---------- Header and navigation ---------- */
-
-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap);
-    padding: 0.75rem 1.5rem;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-}
-
-#title {
-    margin: 0;
-    font-size: 1.4rem;
-}
-
-.navbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-}
-
-.navbar a {
-    color: var(--text-muted);
-    text-decoration: none;
-    padding-bottom: 2px;
-    border-bottom: 2px solid transparent;
-}
-
-.navbar a:hover {
-    color: var(--text);
-}
-
-/* The current page (set with aria-current="page" in the HTML) */
-.navbar a[aria-current="page"] {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-}
-
-/* ---------- Main layout ---------- */
-
-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem;
-}
-
-/* ---------- Search and filters ---------- */
+/*  =====  SEARCH ROW  =====  */
 
 .search_box {
     display: flex;
@@ -117,6 +18,14 @@ main {
     min-width: 200px;
 }
 
+#result_count {
+    margin: 1rem 0 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/*  =====  DROPDOWN BUTTON  =====  */
+
 .dropdown {
     position: relative;   /* anchor for the absolutely positioned menu */
 }
@@ -126,6 +35,13 @@ main {
     content: " \25BE";
 }
 
+.dropdown > button[aria-expanded="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+/*  =====  DROPDOWN MENU  =====  */
+
 .dropdown_content {
     display: none;        /* closed by default */
     position: absolute;
@@ -133,72 +49,63 @@ main {
     left: 0;
     z-index: 10;
     min-width: 220px;
-    max-height: 320px;
-    overflow-y: auto;
     margin-top: 0.25rem;
     padding: 0.75rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 6px 20px rgb(0 0 0 / 0.12);
+    box-shadow: var(--shadow-md);
 }
 
 /* Open state: driven by aria-expanded, so the JS only has to flip that
    one attribute and both the screen reader and the look stay in sync. */
 .dropdown > button[aria-expanded="true"] + .dropdown_content {
     display: grid;
-}
-
-/* The open dropdown button gets a highlighted look */
-.dropdown > button[aria-expanded="true"] {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-}
-
-/* Menu layout: checkbox in column 1, its label in column 2 */
-.dropdown_content input[type="search"] {
-    width: 100%;
-    margin-bottom: 0.5rem;
-}
-
-.options label{
-    display: flex;
     gap: 0.5rem;
 }
 
-.option_count {
-    display: inline-block;
+.dropdown_content input[type="search"] {
+    width: 100%;
 }
 
-.options label[hidden] {
-    display: none;
+/*  =====  DROPDOWN OPTIONS  =====  */
+
+/* Only the options scroll, so the menu's search box stays in view */
+.options {
+    max-height: 15rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
-.options label.unavailable {
-     display: none; 
-}
-
-#clear_filters {
-    font: inherit;
-    color: inherit;
-    padding: 0.4rem 0.8rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+.options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.4rem;
+    border-radius: calc(var(--radius) / 2);
     cursor: pointer;
 }
 
-#clear_filters:hover {
+.options label:hover {
     background: var(--accent-soft);
 }
 
-#result_count {
-    margin: 1rem 0 0.75rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+/* Options with no models left under the current filters (set by the JS) */
+.options label.unavailable {
+    display: none;
 }
 
-/* ---------- Card grid ---------- */
+.option_count {
+    margin-left: auto;    /* pushes the count to the right edge */
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/*
+=============================
+    CARD GRID
+=============================
+*/
 
 .card_grid {
     display: grid;
@@ -207,22 +114,23 @@ main {
     gap: var(--gap);
 }
 
+/*  =====  CARD  =====  */
+
 .card {
     position: relative;   /* anchor for the stretched button below */
     overflow: hidden;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    transition: box-shadow 0.15s, transform 0.15s;
+    transition: box-shadow 0.15s, border-color 0.15s;
 }
 
 .card:hover {
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.1);
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
 }
 
 .card img {
-    display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: contain;
@@ -242,15 +150,15 @@ main {
     font-size: 0.9rem;
 }
 
+/*  =====  CARD BUTTON  =====  */
+
 /* The car name is a button that looks like plain heading text... */
 .card_open {
     padding: 0;
     border: 0;
     background: none;
-    font: inherit;
     font-weight: 600;
     text-align: left;
-    cursor: pointer;
 }
 
 .card_open:hover {
@@ -276,19 +184,36 @@ main {
     border-radius: var(--radius);
 }
 
-/* ---------- Model dialog (popup) ---------- */
+/*
+=============================
+    MODEL DIALOG
+=============================
+*/
+
+/*  =====  DIALOG BOX  =====  */
 
 /* Never set "display" on dialog itself: it would stop it from hiding when closed. */
 dialog {
     width: min(92vw, 520px);
-    max-height: 90vh;
+    max-height: 90dvh;
     padding: 0;
     overflow-y: auto;
     color: var(--text);
     background: var(--surface);
     border: 0;
-    border-radius: 12px;
-    box-shadow: 0 12px 40px rgb(0 0 0 / 0.3);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+dialog[open] {
+    animation: dialog_in 0.15s ease-out;
+}
+
+@keyframes dialog_in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
 }
 
 /* The dimmed page behind the open dialog */
@@ -297,11 +222,36 @@ dialog::backdrop {
     backdrop-filter: blur(2px);
 }
 
-.dialog_body {
-    padding: 2rem;
+/* Stops the page behind from scrolling while the dialog is open */
+body:has(dialog[open]) {
+    overflow: hidden;
 }
 
-/* Title + buttons row above the picture. */
+/*  =====  DIALOG CONTENT  =====  */
+
+.dialog_body {
+    padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.dialog_body img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+}
+
+.dialog_body ul {
+    display: grid;
+    gap: 0.35rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+/*  =====  DIALOG HEADER  =====  */
+
+/* Title + buttons row above the picture */
 .dialog_header {
     display: flex;
     flex-wrap: wrap;
@@ -310,62 +260,48 @@ dialog::backdrop {
     margin-bottom: 0.75rem;
 }
 
-dialog h2 {
+.dialog_header h2 {
     flex: 1 1 100%;       /* title on its own line, buttons wrap below it */
-    margin: 0;
     font-size: 1.25rem;
 }
 
-dialog img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: contain;
-    background: var(--accent-soft);
-    border-radius: var(--radius);
-}
-
-dialog ul {
-    display: grid;
-    gap: 0.35rem;
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-}
-
 /* Close sits at the end of the button row */
-.close {
+.dialog_header .close {
     margin-left: auto;
 }
 
-.delete {
+.dialog_header .delete {
     color: var(--danger);
     border-color: var(--danger);
 }
 
-.delete:hover {
+.dialog_header .delete:hover {
     background: var(--danger);
     color: #ffffff;
 }
 
-/* ---------- Footer ---------- */
-
-footer {
-    padding: 1.5rem;
-    color: var(--text-muted);
-    text-align: center;
-}
-
-/* ---------- Small screens ---------- */
+/*
+=============================
+    SMALL SCREENS
+=============================
+*/
 
 @media (max-width: 600px) {
-    header,
-    main {
-        padding-inline: 1rem;
-    }
-
     #search_bar {
         flex-basis: 100%;  /* search takes its own full row */
+    }
+
+    /* Menus open across the full search row, so they never run off the screen */
+    .search_box {
+        position: relative;
+    }
+
+    .dropdown {
+        position: static;
+    }
+
+    .dropdown_content {
+        right: 0;
     }
 
     .card_grid {

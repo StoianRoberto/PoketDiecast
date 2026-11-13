@@ -9,7 +9,7 @@
 export const cars = [
     {
         id: 1,
-        name: "Mazda RX-7 (FD)",
+        name: "RX-7 (FD)",
         make: "Mazda",
         brand: "HotWheels",
         scale: "1:64",
@@ -21,7 +21,7 @@ export const cars = [
     },
     {
         id: 2,
-        name: "Nissan Skyline GT-R (R34)",
+        name: "Skyline GT-R (R34)",
         make: "Nissan",
         brand: "Majorette",
         scale: "1:64",
@@ -33,7 +33,7 @@ export const cars = [
     },
     {
         id: 3,
-        name: "Toyota Supra (A80)",
+        name: "Supra (A80)",
         make: "Toyota",
         brand: "Matchbox",
         scale: "1:64",
@@ -45,7 +45,7 @@ export const cars = [
     },
     {
         id: 4,
-        name: "Toyota AE86 Sprinter Trueno",
+        name: "AE86 Sprinter Trueno",
         make: "Toyota",
         brand: "HotWheels",
         scale: "1:64",
@@ -57,7 +57,7 @@ export const cars = [
     },
     {
         id: 5,
-        name: "Nissan Fairlady Z (S30)",
+        name: "Fairlady Z (S30)",
         make: "Nissan",
         brand: "HotWheels",
         scale: "1:64",
@@ -69,7 +69,7 @@ export const cars = [
     },
     {
         id: 6,
-        name: "Porsche 911 Carrera RS 2.7",
+        name: "911 Carrera RS 2.7",
         make: "Porsche",
         brand: "Minichamps",
         scale: "1:43",
@@ -81,7 +81,7 @@ export const cars = [
     },
     {
         id: 7,
-        name: "BMW M3 (E30)",
+        name: "M3 (E30)",
         make: "BMW",
         brand: "Minichamps",
         scale: "1:43",
@@ -93,7 +93,7 @@ export const cars = [
     },
     {
         id: 8,
-        name: "Ford Mustang Shelby GT500",
+        name: "Mustang Shelby GT500",
         make: "Ford",
         brand: "Maisto",
         scale: "1:24",
@@ -105,7 +105,7 @@ export const cars = [
     },
     {
         id: 9,
-        name: "Chevrolet Corvette Stingray (C2)",
+        name: "Corvette Stingray (C2)",
         make: "Chevrolet",
         brand: "Bburago",
         scale: "1:18",
@@ -117,7 +117,7 @@ export const cars = [
     },
     {
         id: 10,
-        name: "Lamborghini Countach LP400",
+        name: "Countach LP400",
         make: "Lamborghini",
         brand: "Bburago",
         scale: "1:24",
@@ -129,7 +129,7 @@ export const cars = [
     },
     {
         id: 11,
-        name: "Ferrari F40",
+        name: "F40",
         make: "Ferrari",
         brand: "Maisto",
         scale: "1:18",
@@ -141,7 +141,7 @@ export const cars = [
     },
     {
         id: 12,
-        name: "Volkswagen Beetle",
+        name: "Beetle",
         make: "Volkswagen",
         brand: "Majorette",
         scale: "1:64",
@@ -153,7 +153,7 @@ export const cars = [
     },
     {
         id: 13,
-        name: "Mini Cooper S",
+        name: "Cooper S",
         make: "Mini",
         brand: "Matchbox",
         scale: "1:64",
@@ -165,7 +165,7 @@ export const cars = [
     },
     {
         id: 14,
-        name: "DeLorean DMC-12",
+        name: "DMC-12",
         make: "DeLorean",
         brand: "HotWheels",
         scale: "1:64",
