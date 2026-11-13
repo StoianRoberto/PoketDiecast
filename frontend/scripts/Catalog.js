@@ -1,16 +1,19 @@
 import { cars } from "./data/Cars.js";
 
 /*
-    Page Elements
+=============================
+    PAGE ELEMENTS
+=============================
 */
+
 const searchbar = document.getElementById("search_bar");
-const scale = document.getElementById("scale_menu");
-const brand = document.getElementById("brand_menu");
-const make = document.getElementById("make_menu");
 const clear = document.getElementById("clear_filters");
 const count = document.getElementById("result_count");
 const model = document.getElementById("model_dialog");
 const grid = document.getElementById("card_grid");
+const dropdown_menus = Array.from(document.querySelectorAll("[data-field]"));
+const selected_filters = Object.fromEntries( dropdown_menus.map(menu => [menu.dataset.field, new Set()]) );
+let searchQuery = "";
 
 /*
 =============================
@@ -18,8 +21,12 @@ const grid = document.getElementById("card_grid");
 =============================
 */
 
+//  =====  EVENTS  =====
+
 //  Event to close dialog clicking outside its scope
 model.addEventListener("click", (event) => { if (event.target === model) { model.close() } } );
+
+//  =====  FUNCTIONS  =====
 
 //  Clears and populates the gird
 function populateCardGrid(list) {
@@ -109,6 +116,8 @@ function openCard(car) {
     car_brand.textContent = "Brand: " + car.brand;
     const car_make = document.createElement("li");
     car_make.textContent = "Maker: " + car.make;
+    const car_scale = document.createElement("li");
+    car_scale.textContent = "Scale: " + car.scale;
     const car_year = document.createElement("li");
     car_year.textContent = "Year: " + car.year;
     const car_series = document.createElement("li");
@@ -118,16 +127,12 @@ function openCard(car) {
     const model_number = document.createElement("li");
     model_number.textContent = "Model number: " + car.model_number;
 
-    info.append(car_brand, car_make, car_year, car_series, car_collection, model_number);
+    info.append(car_brand, car_make, car_scale, car_year, car_series, car_collection, model_number);
 
     body.append(header, img, info);
     model.append(body);
     model.showModal();
 };
-
-//  Generate the grid
-populateCardGrid(cars);
-
 
 /*
 =============================
@@ -135,12 +140,148 @@ populateCardGrid(cars);
 =============================
 */
 
-const selected = {};
-document.querySelectorAll("[data-field]").forEach(menu => {
-    selected[menu.dataset.field] = new Set();
-});
-let query = "";
+//  =====  HELPERS  =====
 
+//  Count the number of cars by the field selected
+function countByField(list, field) {
+    const counts = {};
+    list.forEach(car => { counts[car[field]] = (counts[car[field]] || 0) + 1; });
+    return counts;
+};
+
+//  Filter the car list based on query and selected fields
+function applyFilters(list, selected, query) {
+    return list.filter(car => {
+        const matches_text = car.name.toLowerCase().includes(query);
+        const matches_fields = Object.entries(selected).every(([field, values]) => values.size === 0 || values.has(String(car[field])));
+        return matches_text && matches_fields;
+    });
+};
+
+//  =====  FUNCTIONS  =====
+
+//  Creates the dropdown content (checkboxes)
+function buildOptions(cars, menu, field) {
+    const options = menu.querySelector(".options");
+    const values = Array.from(new Set(cars.map(car => String(car[field]))));
+    values.sort((a,b) => a.localeCompare(b, undefined, {numeric: true}));
+
+    values.forEach(value => {
+        const label = document.createElement("label");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = value;
+
+        const option_name = document.createElement("span");
+        option_name.classList.add("option_name");
+        option_name.textContent = value;
+        
+        const option_count = document.createElement("span");
+        option_count.classList.add("option_count");
+        option_count.textContent = "";
+
+        label.append(checkbox, option_name, option_count);
+        options.append(label);
+    });
+};
+
+//  Populates the dropdown content and adds listeners for its funtionalities
+function setupDropdown(cars, menu) {
+    const dropdown = menu.closest(".dropdown");
+    const button = dropdown.querySelector("button");
+    const search_input = menu.querySelector('input[type="search"]');
+    const options = menu.querySelector(".options")
+    const field = menu.dataset.field;
+
+    buildOptions(cars, menu, field);
+
+    function closeMenu(){
+        button.setAttribute("aria-expanded", "false");
+        if(search_input){
+            search_input.value = "";
+            options.querySelectorAll("label[hidden]").forEach(label => label.hidden = false);
+        }
+    };
+
+    button.addEventListener("click", () => {
+        const is_expanded = button.getAttribute("aria-expanded") === "true";
+        if(is_expanded) closeMenu();
+        else button.setAttribute("aria-expanded", "true");
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!dropdown.contains(event.target)) closeMenu();
+    });
+
+    if(search_input) search_input.addEventListener("input", (event) => {
+        const text = event.target.value.toLowerCase().trim();
+        options.querySelectorAll("label").forEach(label => {
+            const value = label.querySelector("input").value.toLowerCase();
+            label.hidden = !value.includes(text);
+        })
+    });
+
+    options.addEventListener("change", (event) => {
+        const value = event.target.value;
+        if(event.target.checked) selected_filters[field].add(value);
+        else selected_filters[field].delete(value);
+        update();
+    });    
+}
+
+//  Counts the entries for each option in the dropdown menus and updates them.
+//  Syncs the checkboxes to the saved filters
+function syncOptions() {
+    dropdown_menus.forEach(menu => {
+        const field = menu.dataset.field;
+        const selected_filters_temp = Object.assign({}, selected_filters, { [field]: new Set() });
+
+        const filtered_list = applyFilters(cars, selected_filters_temp, searchQuery);
+        const counted_list = countByField(filtered_list, field);
+    
+        menu.querySelectorAll(".options label").forEach(label => {
+            const checkbox = label.querySelector("input");
+            checkbox.checked = selected_filters[field].has(checkbox.value);
+            const amount_per_option = counted_list[checkbox.value] || 0;
+            label.querySelector(".option_count").textContent = `(${amount_per_option})`;
+            label.classList.toggle("unavailable", amount_per_option === 0 && !checkbox.checked);
+        });
+    });
+};
+
+//  Updates the grid and menus 
+function update(){
+    populateCardGrid(applyFilters(cars,selected_filters, searchQuery));
+    syncOptions();
+};
+
+//  =====  EVENTS  =====
+
+//  Searchbar filtering
+searchbar.addEventListener("input", (event) => {
+    searchQuery = event.target.value.toLowerCase().trim();
+    update();
+});
+
+//  Clear filters button
+clear.addEventListener("click", () => {
+    Object.values(selected_filters).forEach(set => set.clear());
+    searchQuery = "";
+    searchbar.value = "";
+    update();
+});
+
+/*
+=============================
+    INITIALISATION
+=============================
+*/
+
+dropdown_menus.forEach(menu => setupDropdown(cars, menu));
+update();
+
+/*
 document.querySelectorAll("[data-field]").forEach(content => populateDropdown(content, cars));
 document.addEventListener('click', (event) => handle(event));
 clear.addEventListener('click', (event) => {
@@ -148,13 +289,11 @@ clear.addEventListener('click', (event) => {
     query = "";
     searchbar.value = "";
     
-    searchbar.value = "";
     document.querySelectorAll('.dropdown_content input[type="checkbox"]')
         .forEach(checkbox => checkbox.checked = false);
-    /*document.querySelectorAll(".options label[hidden]")
+    document.querySelectorAll(".options label[hidden]")
         .forEach(label => label.hidden = false);
-    */
-    document.querySelectorAll(".dropdown_content").forEach(resetMenuSearch);
+
     update();
 });
 
@@ -187,24 +326,16 @@ document.addEventListener("input", (event) => {
     });
 });
 
-function resetMenuSearch(menu) {
-    const box = menu.querySelector('input[type="search"]');
-    if(box) box.value = "";
-    menu.querySelectorAll(".options label[hidden]").forEach(label => label.hidden = false);
-};
-
 function closeAll() {
     document.querySelectorAll('.dropdown_content input[type="search"]')
         .forEach(box => box.value = "");
     document.querySelectorAll('.dropdown > button').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll(".dropdown_content").forEach(resetMenuSearch);
 };
 
 function toggle(button){
-    const exp = button.getAttribute("aria-expanded") === "true";
+    const is_expanded = button.getAttribute("aria-expanded") === "true";
     closeAll();
-
-    button.setAttribute("aria-expanded", String(!exp));
+    button.setAttribute("aria-expanded", String(!is_expanded));
 };
 
 function handle(event) {
@@ -219,54 +350,17 @@ function handle(event) {
     closeAll();
 };
 
-function countBy(list, field) {
-    const counts = {};
-    list.forEach(car => { counts[car[field]] = (counts[car[field]] || 0) + 1; });
-    return counts;
+function closeAll() {
+    document.querySelectorAll('.dropdown_content input[type="search"]')
+        .forEach(box => box.value = "");
+    document.querySelectorAll('.dropdown > button').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    document.querySelectorAll(".dropdown_content").forEach(resetMenuSearch);
 };
 
-function updateCounts() {
-    document.querySelectorAll("[data-field]").forEach(menu => {
-        const field = menu.dataset.field;
-        const others = applyFilters(cars, { ...selected, [field]: new Set() }, query);
-        const counts = countBy(others, field);
-
-        menu.querySelectorAll(".options label").forEach(label => {
-            const box = label.querySelector("input");
-            const amount = counts[box.value] || 0;
-            label.querySelector(".option_count").textContent = `(${amount})`;
-            label.classList.toggle("unavailable", amount === 0 && !box.checked);
-        });
-    });
-};
-
-function populateDropdown(content, cars) {
-    const field = content.dataset.field;
-    const options = content.querySelector(".options");
-    const count = {};
-    cars.forEach(car => {count[car[field]] = (count[car[field]] || 0) + 1;});
-
-    Object.keys(count)
-        .sort()
-        .forEach(value => {
-            const label = document.createElement("label");
-
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.name = field;
-            checkbox.value = value;
-
-            const name = document.createElement("span");
-            name.classList.add("option_name");
-            name.textContent = value;
-            
-            const amount = document.createElement("span");
-            amount.classList.add("option_count");
-            amount.textContent = `(${count[value]})`;
-
-            label.append(checkbox, name, amount);
-            options.append(label);
-    })
+function resetMenuSearch(menu) {
+    const box = menu.querySelector('input[type="search"]');
+    if(box) box.value = "";
+    menu.querySelectorAll(".options label[hidden]").forEach(label => label.hidden = false);
 };
 
 function applyFilters(cars, selected, query) {
@@ -279,7 +373,24 @@ function applyFilters(cars, selected, query) {
     });
 };
 
+function updateCounts() {
+    document.querySelectorAll("[data-field]").forEach(menu => {
+        const field = menu.dataset.field;
+        const others = applyFilters(cars, { ...selected, [field]: new Set() }, query);
+        const counts = countBy(others, field);
+
+        menu.querySelectorAll(".options label").forEach(label => {
+            const box = label.querySelector("input");
+            box.checked = selected[field].has(box.value);
+            const amount = counts[box.value] || 0;
+            label.querySelector(".option_count").textContent = `(${amount})`;
+            label.classList.toggle("unavailable", amount === 0 && !box.checked);
+        });
+    });
+};
+
 function update() {
     populateCardGrid(applyFilters(cars, selected, query));
     updateCounts();
 };
+*/
